@@ -2,8 +2,8 @@ var server = require ('tk102');
 var mysql = require('mysql');
 var con = mysql.createConnection({
     host: "localhost",
-    user: "azolla",
-    password: "Azolla135246",
+    user: "root",
+    password: "rts123",
     database: "gps"
 });
 
