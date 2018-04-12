@@ -19,10 +19,11 @@ con.connect(function(err) {
         console.log ('Incoming data: '+ raw);
         var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
         con.query(sql, [raw], function (err, result) {
-            if (err) {
-                console.log(err);
-            } else {
+            try {
+                if (err) throw err;
                 console.log("1 record inserted");
+            } catch (e) {
+                console.log(err);
             }
         });
     });
