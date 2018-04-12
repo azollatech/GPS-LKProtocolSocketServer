@@ -19,12 +19,8 @@ con.connect(function(err) {
         console.log ('Incoming data: '+ raw);
         var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
         con.query(sql, [raw], function (err, result) {
-            try {
-                if (err) throw err;
-                console.log("1 record inserted");
-            } catch (e) {
-                console.log(err);
-            }
+            if (err) throw err;
+            console.log("1 record inserted");
         });
     });
 
@@ -34,11 +30,8 @@ con.connect(function(err) {
 
         var sql = "INSERT INTO gps_data (device_id, latitude_final, longitude_final, datetime) VALUES (?, ?, ?, ?)";
         con.query(sql, [device_id, gps.geo.latitude, gps.geo.longitude, gps.datetime], function (err, result) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("1 record inserted");
-            }
+            if (err) throw err;
+            console.log("1 record inserted");
         });
         // { raw: '1203301642,0031698765432,GPRMC,144219.000,A,5213.0327,N,00516.7759,E,0.63,179.59,300312,,,A*6D,F,imei:123456789012345,123',
         //   datetime: '2012-03-30 16:42',
