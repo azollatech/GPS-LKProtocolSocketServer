@@ -2,7 +2,7 @@ var server = require ('tk102');
 
 // start server
 server.createServer ({
-    port: 1337
+    port: 40000
 });
 
 // incoming data, i.e. update a map
