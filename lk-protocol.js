@@ -24,45 +24,53 @@ con.connect(function(err) {
     server.on ('data', function (raw) {
         console.log ('Incoming data: '+ raw);
 
-        var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-        con.query(sql, [raw], function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-        });
-
         var array = raw.split(',');
-        var device_id = array[1];
-        var command = array[2];
+        if (array.length > 3) {
+            var device_id = array[1];
+            var command = array[2];
+        } else {
+            return;
+        }
 
-        var validity = array[4];
+        if (command == 'V1') {
+            
+            var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            con.query(sql, [raw], function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
 
-        var latitudeRaw = array[5];
-        var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
-        var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
-        var latitude = latitudeDigit + latitudeDecimal;
-        var latitude_logo = array[6];
-        var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
+            var validity = array[4];
 
-        var longitudeRaw = array[7];
-        var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
-        var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
-        var longitude = longitudeDigit + longitudeDecimal;
-        var longitude_logo = array[8];
-        var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
+            var latitudeRaw = array[5];
+            var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
+            var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
+            var latitude = latitudeDigit + latitudeDecimal;
+            var latitude_logo = array[6];
+            var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
 
-        var dateObj = date.parse(array[11], 'DDMMYY');
-        var date_final = date.format(dateObj, 'YYYY-MM-DD');
-        var timeObj = date.parse(array[3], 'HHmmss');
-        var time_final = date.format(timeObj, 'HH:mm:ss');
-        var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+            var longitudeRaw = array[7];
+            var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
+            var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
+            var longitude = longitudeDigit + longitudeDecimal;
+            var longitude_logo = array[8];
+            var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
 
-        // console.log(datetime);
+            var dateObj = date.parse(array[11], 'DDMMYY');
+            var date_final = date.format(dateObj, 'YYYY-MM-DD');
+            var timeObj = date.parse(array[3], 'HHmmss');
+            var time_final = date.format(timeObj, 'HH:mm:ss');
+            var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
 
-        var sql = "INSERT INTO gps_data (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        con.query(sql, [device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime], function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-        });
+            // console.log(datetime);
+
+            var sql = "INSERT INTO gps_data (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            con.query(sql, [device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime], function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
+        }
+
     });
 
     // server.on ('track', function (gps) {
