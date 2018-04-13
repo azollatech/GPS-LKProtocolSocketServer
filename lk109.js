@@ -21,6 +21,7 @@ var adapter = function (device) {
     this.parse_data = function (data) {
         data = this.bufferToHexString(data);
         console.log(data);
+        var parts = [];
         // var parts = {
         //     'start': data.substr(0, 4)
         // };
@@ -88,62 +89,62 @@ var adapter = function (device) {
         // }
         return parts;
     };
-    // this.bufferToHexString = function (buffer) {
-    //     var str = '';
-    //     for (var i = 0; i < buffer.length; i++) {
-    //         if (buffer[i] < 16) {
-    //             str += '0';
-    //         }
-    //         str += buffer[i].toString(16);
-    //     }
-    //     return str;
-    // };
-    // this.authorize = function () {
-    //     this.send_comand('\u0054\u0068\u001a\u000d\u000a');
-    // };
-    // this.zeroPad = function (nNum, nPad) {
-    //     return ('' + (Math.pow(10, nPad) + nNum)).slice(1);
-    // };
-    // this.synchronous_clock = function () {
-    //     var d = new Date();
-    //
-    //     var str = (d.getFullYear().toString().substr(2, 2)) +
-    //     (this.zeroPad(d.getMonth() + 1, 2).toString()) +
-    //     (this.zeroPad(d.getDate(), 2).toString()) +
-    //     (this.zeroPad(d.getHours(), 2).toString()) +
-    //     (this.zeroPad(d.getMinutes(), 2).toString()) +
-    //     (this.zeroPad(d.getSeconds(), 2).toString()) +
-    //     (this.zeroPad(this.__count, 4).toString());
-    //
-    //     this.__count++;
-    //
-    //     var crc = require('/usr/lib/node_modules/crc/lib/index.js');
-    //     var crcResult = f.str_pad(crc.crc16(str).toString(16), 4, '0');
-    //
-    //     var buff = new Buffer(str + crcResult, 'hex');
-    //     this.send_comand('7878', buff);
-    // };
-    // this.run_other = function (cmd, msg_parts) {
-    //     switch (cmd) {
-    //         case 'BP00': //Handshake
-    //         this.device.send(this.format_data(this.device.uid + 'AP01HSO'));
-    //         break;
-    //     }
-    // };
-    //
-    // this.request_login_to_device = function () {
-    //     //@TODO: Implement this.
-    // };
-    //
-    // this.receive_alarm = function (msg_parts) {
-    //     //@TODO: implement this
-    //     //My device have no support of this feature
-    //     return alarm;
-    // };
-    //
-    // this.dex_to_degrees = function (dex) {
-    //     return parseInt(dex, 16) / 1800000;
-    // };
+    this.bufferToHexString = function (buffer) {
+        var str = '';
+        for (var i = 0; i < buffer.length; i++) {
+            if (buffer[i] < 16) {
+                str += '0';
+            }
+            str += buffer[i].toString(16);
+        }
+        return str;
+    };
+    this.authorize = function () {
+        this.send_comand('\u0054\u0068\u001a\u000d\u000a');
+    };
+    this.zeroPad = function (nNum, nPad) {
+        return ('' + (Math.pow(10, nPad) + nNum)).slice(1);
+    };
+    this.synchronous_clock = function () {
+        var d = new Date();
+
+        var str = (d.getFullYear().toString().substr(2, 2)) +
+        (this.zeroPad(d.getMonth() + 1, 2).toString()) +
+        (this.zeroPad(d.getDate(), 2).toString()) +
+        (this.zeroPad(d.getHours(), 2).toString()) +
+        (this.zeroPad(d.getMinutes(), 2).toString()) +
+        (this.zeroPad(d.getSeconds(), 2).toString()) +
+        (this.zeroPad(this.__count, 4).toString());
+
+        this.__count++;
+
+        var crc = require('/usr/lib/node_modules/crc/lib/index.js');
+        var crcResult = f.str_pad(crc.crc16(str).toString(16), 4, '0');
+
+        var buff = new Buffer(str + crcResult, 'hex');
+        this.send_comand('7878', buff);
+    };
+    this.run_other = function (cmd, msg_parts) {
+        switch (cmd) {
+            case 'BP00': //Handshake
+            this.device.send(this.format_data(this.device.uid + 'AP01HSO'));
+            break;
+        }
+    };
+
+    this.request_login_to_device = function () {
+        //@TODO: Implement this.
+    };
+
+    this.receive_alarm = function (msg_parts) {
+        //@TODO: implement this
+        //My device have no support of this feature
+        return alarm;
+    };
+
+    this.dex_to_degrees = function (dex) {
+        return parseInt(dex, 16) / 1800000;
+    };
 
     this.get_ping_data = function (msg_parts) {
         var str = msg_parts.data;
