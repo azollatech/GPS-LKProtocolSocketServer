@@ -10,6 +10,7 @@ var adapter = function (device) {
     this.format = {'start': '*', 'end': '#', 'separator': ','};
     this.device = device;
     this.__count = 1;
+    this.first_time = true;
 
     /*******************************************
     PARSE THE INCOMING STRING FROM THE DECIVE
@@ -41,16 +42,22 @@ var adapter = function (device) {
     	};
     	switch(parts.cmd){
     		case "V1":
-    			parts.action="login_request";
+                if (this.first_time) {
+        			parts.action = "login_request";
+                    this.first_time = false;
+                } else {
+        			parts.action = "ping";
+                }
+
     			break;
     		case "V2":
-    			parts.action="other";
+    			parts.action = "other";
     			break;
     		case "NBR":
-    			parts.action="other";
+    			parts.action = "other";
     			break;
     		default:
-    			parts.action="other";
+    			parts.action = "other";
     	}
 
     	return parts;
