@@ -3,7 +3,7 @@ var gps = require("gps-tracking");
 var options = {
     'debug'                 : true,
     'port'                  : 40000,
-    'device_adapter'        : "TK103"
+    'device_adapter'        : require("./lk109.js")
 }
 
 var server = gps.server(options,function(device,connection){
