@@ -20,6 +20,7 @@ var adapter = function (device) {
     return type: login_request, ping, etc.
     *******************************************/
     this.parse_data = function (data) {
+        console.log(data);
         data = data.toString();
         console.log(data);
 
