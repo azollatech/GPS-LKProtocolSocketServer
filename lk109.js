@@ -10,7 +10,6 @@ var adapter = function (device) {
     this.format = {'start': '*', 'end': '#', 'separator': ','};
     this.device = device;
     this.__count = 1;
-    this.first_time = true;
 
     /*******************************************
     PARSE THE INCOMING STRING FROM THE DECIVE
@@ -21,6 +20,20 @@ var adapter = function (device) {
     *******************************************/
     this.parse_data = function (data) {
         console.log(data);
+
+        // real gps data ping
+        if (data.substr(0,2) == '24') {
+            var parts={
+    			"start" 		: data.substr(0,2),
+    			"device_id" 	: data.substr(2,10),//mandatory
+    			"cmd" 			: 'ping', //mandatory
+    			"data" 			: data.substring(12),
+                "action"        : 'ping'
+    		};
+            return parts;
+        }
+
+        // ASCII messages
         data = data.toString();
         console.log(data);
 
@@ -43,13 +56,7 @@ var adapter = function (device) {
     	};
     	switch(parts.cmd){
     		case "V1":
-                if (this.first_time) {
-        			parts.action = "login_request";
-                    this.first_time = false;
-                } else {
-        			parts.action = "ping";
-                }
-
+    			parts.action = "login_request";
     			break;
     		case "V2":
     			parts.action = "other";
@@ -103,6 +110,7 @@ var adapter = function (device) {
 
     this.get_ping_data = function (msg_parts) {
         var str = msg_parts.data;
+        console.log('get_ping_data');
 
         var data = {
             'date': str.substr(0, 12),
