@@ -1,4 +1,4 @@
-var server = require ('tk102');
+var gpsServer = require('gps-server');
 let date = require('date-and-time');
 var mysql = require('mysql');
 var con = mysql.createConnection({
@@ -33,7 +33,7 @@ con.connect(function(err) {
         }
 
         if (command == 'V1') {
-            
+
             var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
             con.query(sql, [raw], function (err, result) {
                 if (err) throw err;
