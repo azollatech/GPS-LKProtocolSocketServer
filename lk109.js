@@ -19,119 +19,31 @@ var adapter = function (device) {
     return type: login_request, ping, etc.
     *******************************************/
     this.parse_data = function (data) {
-        data = this.bufferToHexString(data);
+        data = data.toString();
         console.log(data);
-
-        var parts = [];
         var array = data.split(',');
-        if (array.length > 3) {
-            parts['device_id'] = array[1];
-            parts['cmd'] = array[2];
-        } else {
-            parts['device_id'] = 'empty';
-            parts['cmd'] = 'empty';
-        }
+    	var parts={
+    		"start" 		: data.substr(0,1),
+    		"device_id" 	: array[1],//mandatory
+    		"cmd" 			: array[2], //mandatory
+    		"data" 			: data,
+    		"finish" 		: data.substr(data.length-1,1)
+    	};
+    	switch(parts.cmd){
+    		case "V1":
+    			parts.action="ping";
+    			break;
+    		case "V2":
+    			parts.action="other";
+    			break;
+    		case "NBR":
+    			parts.action="other";
+    			break;
+    		default:
+    			parts.action="other";
+    	}
 
-        parts['action'] = 'noop';
-
-        if (parts['cmd'] == 'V1') {
-
-            parts['action'] = 'png';
-
-            // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-            // con.query(sql, [raw], function (err, result) {
-            //     if (err) throw err;
-            //     console.log("1 record inserted");
-            // });
-            //
-            // var validity = array[4];
-            //
-            // var latitudeRaw = array[5];
-            // var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
-            // var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
-            // var latitude = latitudeDigit + latitudeDecimal;
-            // var latitude_logo = array[6];
-            // var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
-            //
-            // var longitudeRaw = array[7];
-            // var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
-            // var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
-            // var longitude = longitudeDigit + longitudeDecimal;
-            // var longitude_logo = array[8];
-            // var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
-            //
-            // var dateObj = date.parse(array[11], 'DDMMYY');
-            // var date_final = date.format(dateObj, 'YYYY-MM-DD');
-            // var timeObj = date.parse(array[3], 'HHmmss');
-            // var time_final = date.format(timeObj, 'HH:mm:ss');
-            // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
-        }
-        // var parts = {
-        //     'start': data.substr(0, 4)
-        // };
-        //
-        // if (parts['start'] == '6868') {
-        //     parts['length'] = parseInt(data.substr(4, 2), 16);
-        //     parts['finish'] = data.substr(parts['length'] * 2 + 6, 4);
-        //
-        //     if (parts['finish'] != '0d0a') {
-        //         throw 'finish code incorrect!';
-        //     }
-        //     parts['power'] = parseInt(data.substr(6, 2), 16);
-        //     parts['gsm'] = parseInt(data.substr(8, 2), 16);
-        //     parts['device_id'] = data.substr(10, 16);
-        //     parts['count'] = data.substr(26, 4);
-        //     parts['protocal_id'] = data.substr(30, 2);
-        //
-        //     parts['data'] = data.substr(32, parts['length']);
-        //
-        //     if (parts['protocal_id'] == '1a') {
-        //         parts.cmd = 'login_request';
-        //         parts.action = 'login_request';
-        //     } else if (parts['protocal_id'] == '10') {
-        //         parts.cmd = 'ping';
-        //         parts.action = 'ping';
-        //     } else {
-        //         parts.cmd = 'noop';
-        //         parts.action = 'noop';
-        //     }
-        // } else if (parts['start'] == '7979') {
-        //     parts['length'] = parseInt(data.substr(4, 4), 16);
-        //     parts['finish'] = data.substr(8 + parts['length'] * 2, 4);
-        //
-        //     parts['protocal_id'] = data.substr(8, 2);
-        //
-        //     if (parts['finish'] != '0d0a') {
-        //         throw 'finish code incorrect!';
-        //     }
-        //
-        //     if (parts['protocal_id'] == '94') {
-        //         parts['device_id'] = '';
-        //         parts.cmd = 'noop';
-        //         parts.action = 'noop';
-        //     }
-        //
-        // } else if (parts['start'] == '7878') {
-        //     parts['length'] = parseInt(data.substr(4, 2), 16);
-        //     parts['finish'] = data.substr(6 + parts['length'] * 2, 4);
-        //
-        //     parts['protocal_id'] = data.substr(6, 2);
-        //
-        //     if (parts['finish'] != '0d0a') {
-        //         throw 'finish code incorrect!';
-        //     }
-        //
-        //     if (parts['protocal_id'] == '8a') {
-        //         parts['device_id'] = '';
-        //         parts.cmd = 'clock';
-        //         parts.action = 'clock';
-        //     } else {
-        //         parts['device_id'] = '';
-        //         parts.cmd = 'noop';
-        //         parts.action = 'noop';
-        //     }
-        // }
-        return parts;
+    	return parts;
     };
     this.bufferToHexString = function (buffer) {
         var str = '';
@@ -144,29 +56,10 @@ var adapter = function (device) {
         return str;
     };
     this.authorize = function () {
-        this.send_comand('\u0054\u0068\u001a\u000d\u000a');
-    };
-    this.zeroPad = function (nNum, nPad) {
-        return ('' + (Math.pow(10, nPad) + nNum)).slice(1);
+        //@TODO: implement this
     };
     this.synchronous_clock = function () {
-        var d = new Date();
-
-        var str = (d.getFullYear().toString().substr(2, 2)) +
-        (this.zeroPad(d.getMonth() + 1, 2).toString()) +
-        (this.zeroPad(d.getDate(), 2).toString()) +
-        (this.zeroPad(d.getHours(), 2).toString()) +
-        (this.zeroPad(d.getMinutes(), 2).toString()) +
-        (this.zeroPad(d.getSeconds(), 2).toString()) +
-        (this.zeroPad(this.__count, 4).toString());
-
-        this.__count++;
-
-        var crc = require('/usr/lib/node_modules/crc/lib/index.js');
-        var crcResult = f.str_pad(crc.crc16(str).toString(16), 4, '0');
-
-        var buff = new Buffer(str + crcResult, 'hex');
-        this.send_comand('7878', buff);
+        //@TODO: implement this
     };
     this.run_other = function (cmd, msg_parts) {
         switch (cmd) {
@@ -211,8 +104,8 @@ var adapter = function (device) {
     };
 
     /* SET REFRESH TIME */
-    // this.set_refresh_time = function (interval, duration) {
-    // };
+    this.set_refresh_time = function (interval, duration) {
+    };
 
     /* INTERNAL FUNCTIONS */
 
