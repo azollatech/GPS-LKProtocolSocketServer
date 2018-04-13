@@ -113,43 +113,27 @@ var adapter = function (device) {
         var str = msg_parts.data;
         console.log('get_ping_data');
 
-        var array = raw.split(',');
-        if (array.length > 3) {
-            var device_id = array[1];
-            var command = array[2];
-        } else {
-            return;
-        }
-
-        if (command == 'V1') {
-
-            var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-            con.query(sql, [raw], function (err, result) {
-                if (err) throw err;
-                console.log("1 record inserted");
-            });
-
-            var validity = array[4];
-
-            var latitudeRaw = array[5];
-            var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
-            var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
-            var latitude = latitudeDigit + latitudeDecimal;
-            var latitude_logo = array[6];
-            var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
-
-            var longitudeRaw = array[7];
-            var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
-            var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
-            var longitude = longitudeDigit + longitudeDecimal;
-            var longitude_logo = array[8];
-            var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
-
-            var dateObj = date.parse(array[11], 'DDMMYY');
-            var date_final = date.format(dateObj, 'YYYY-MM-DD');
-            var timeObj = date.parse(array[3], 'HHmmss');
-            var time_final = date.format(timeObj, 'HH:mm:ss');
-            var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+            // var validity = array[4];
+            //
+            // var latitudeRaw = array[5];
+            // var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
+            // var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
+            // var latitude = latitudeDigit + latitudeDecimal;
+            // var latitude_logo = array[6];
+            // var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
+            //
+            // var longitudeRaw = array[7];
+            // var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
+            // var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
+            // var longitude = longitudeDigit + longitudeDecimal;
+            // var longitude_logo = array[8];
+            // var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
+            //
+            // var dateObj = date.parse(array[11], 'DDMMYY');
+            // var date_final = date.format(dateObj, 'YYYY-MM-DD');
+            // var timeObj = date.parse(array[3], 'HHmmss');
+            // var time_final = date.format(timeObj, 'HH:mm:ss');
+            // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
 
         var data = {
             'date': str.substr(0, 6),
