@@ -21,6 +21,16 @@ var adapter = function (device) {
     this.parse_data = function (data) {
         data = data.toString();
         console.log(data);
+
+        if (data.substr(0,1) != '*' || data.indexOf(',') < 0) {
+            var parts={
+        		"device_id" 	: 'unrecognized',
+        		"cmd" 			: 'unrecognized',
+                "action"        : 'other'
+            }
+            return parts;
+        }
+
         var array = data.split(',');
     	var parts={
     		"start" 		: data.substr(0,1),
@@ -31,7 +41,7 @@ var adapter = function (device) {
     	};
     	switch(parts.cmd){
     		case "V1":
-    			parts.action="ping";
+    			parts.action="login_request";
     			break;
     		case "V2":
     			parts.action="other";
