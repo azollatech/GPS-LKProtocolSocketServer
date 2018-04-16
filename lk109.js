@@ -9,7 +9,7 @@ var adapter = function (device) {
 
     this.format = {'start': '*', 'end': '#', 'separator': ','};
     this.device = device;
-    this.device_id = device_id;
+    this.device_id = '';
     this.__count = 1;
 
     /*******************************************
