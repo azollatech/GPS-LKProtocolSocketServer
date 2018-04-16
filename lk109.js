@@ -20,8 +20,8 @@ var adapter = function (device) {
     *******************************************/
     this.parse_data = function (data) {
         var hexdata = this.bufferToHexString(data);
-        console.log(hexdata);
         console.log('\n');
+        console.log(hexdata);
 
         // real gps data ping
         if (hexdata.substr(0,2) == '24') {
