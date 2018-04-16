@@ -1,9 +1,22 @@
 var gps = require("gps-tracking");
+let date = require('date-and-time');
+var mysql = require('mysql');
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "rts123",
+    database: "gps"
+});
 
 var options = {
     'debug'                 : true,
     'port'                  : 40000,
     'device_adapter'        : require("./lk109.js")
+}
+
+function toTimeZone(time, zone) {
+    var format = 'YYYY-MM-DD HH:mm:ss';
+    return moment(time, format).tz(zone).format(format);
 }
 
 var server = gps.server(options,function(device,connection){
@@ -23,6 +36,42 @@ var server = gps.server(options,function(device,connection){
 
         //After the ping is received, but before the data is saved
         console.log(data);
+
+        con.connect(function(err) {
+            if (err) throw err;
+
+            var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            con.query(sql, [data], function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
+
+            var validity = data.validity;
+
+            var latitude = data.latitude;
+            var latitude_logo = (data.north == '1') ? 'N' : 'S';
+            var latitude_final = ((data.north == '1') ? 1 : -1) * latitude;
+
+            var longitude = data.longitude;
+            var longitude_logo = (data.east == '1') ? 'E' : 'W';
+            var longitude_final = ((data.east == '1') ? 1 : -1) * longitude;
+
+            var dateObj = date.parse(data.date, 'DDMMYY');
+            var date_final = date.format(dateObj, 'YYYY-MM-DD');
+            var timeObj = date.parse(data.time, 'HHmmss');
+            var time_final = date.format(timeObj, 'HH:mm:ss');
+            var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+
+            // console.log(datetime);
+
+            var sql = "INSERT INTO gps_data (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            con.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime], function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
+
+        });
+
         return data;
 
     });

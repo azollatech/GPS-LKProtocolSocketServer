@@ -83,9 +83,9 @@ var adapter = function (device) {
     };
     this.authorize = function () {
         //@TODO: implement this
-        var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
-        console.log(this.format_data(data));
-        this.device.send(this.format_data(data));
+        // var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
+        // console.log(this.format_data(data));
+        // this.device.send(this.format_data(data));
     };
     this.synchronous_clock = function () {
         //@TODO: implement this
@@ -188,6 +188,7 @@ var adapter = function (device) {
         var bit1 = binaryInfo.substr(2, 1);
 
         var data = {
+            'device_id': msg_parts.device_id,
             'time': str.substr(0, 6),
             'date': str.substr(6, 6),
             'latitude': this.lat_to_degrees(str.substr(12, 8)),
