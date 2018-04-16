@@ -84,6 +84,7 @@ var adapter = function (device) {
     this.authorize = function () {
         //@TODO: implement this
         var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
+        console.log(this.format_data(data));
         this.device.send(this.format_data(data));
     };
     this.synchronous_clock = function () {
