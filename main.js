@@ -1,7 +1,7 @@
 var gps = require("gps-tracking");
 let date = require('date-and-time');
 var mysql = require('mysql');
-// var moment = require('moment');
+var moment = require('moment-timezone');
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -15,31 +15,31 @@ var options = {
     'device_adapter'        : require("./lk109.js")
 }
 
-// function toTimeZone(time, zone) {
-//     var format = 'YYYY-MM-DD HH:mm:ss';
-//     return moment(time, format).tz(zone).format(format);
-// }
+function toTimeZone(time, zone) {
+    var format = 'YYYY-MM-DD HH:mm:ss';
+    return moment(time, format).tz(zone).format(format);
+}
 
-var server = gps.server(options,function(device,connection){
+con.connect(function(err) {
+    if (err) throw err;
 
-    device.on("login_request",function(device_id,msg_parts){
+    var server = gps.server(options,function(device,connection){
 
-        // Some devices sends a login request before transmitting their position
-        // Do some stuff before authenticate the device...
+        device.on("login_request",function(device_id,msg_parts){
 
-        // Accept the login request. You can set false to reject the device.
-        this.login_authorized(true);
+            // Some devices sends a login request before transmitting their position
+            // Do some stuff before authenticate the device...
 
-    });
+            // Accept the login request. You can set false to reject the device.
+            this.login_authorized(true);
 
-    //PING -> When the gps sends their position
-    device.on("ping",function(data){
+        });
 
-        //After the ping is received, but before the data is saved
-        console.log(data);
+        //PING -> When the gps sends their position
+        device.on("ping",function(data){
 
-        con.connect(function(err) {
-            if (err) throw err;
+            //After the ping is received, but before the data is saved
+            console.log(data);
 
             // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
             // con.query(sql, [data], function (err, result) {
@@ -62,7 +62,7 @@ var server = gps.server(options,function(device,connection){
             var timeObj = date.parse(data.time, 'HHmmss');
             var time_final = date.format(timeObj, 'HH:mm:ss');
             var datetime = date_final + ' ' + time_final;
-            // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+            var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
 
             // console.log(datetime);
 
@@ -72,9 +72,9 @@ var server = gps.server(options,function(device,connection){
                 console.log("1 record inserted");
             });
 
-        });
+            return data;
 
-        return data;
+        });
 
     });
 

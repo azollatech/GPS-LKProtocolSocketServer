@@ -33,12 +33,6 @@ var adapter = function (device) {
     			"data" 			: hexdata.substring(12),
                 "action"        : 'ping'
     		};
-
-            if (!this.loggedin) {
-                //*XX,YYYYYYYYYY,D1,HHMMSS,interval,count#
-                var data = ['HQ', parts.device_id, 'D1', '160800', 30, 1];
-                this.device.send(this.format_data(data));
-            }
             return parts;
         }
 
