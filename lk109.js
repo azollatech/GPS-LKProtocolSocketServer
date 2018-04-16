@@ -9,8 +9,8 @@ var adapter = function (device) {
 
     this.format = {'start': '*', 'end': '#', 'separator': ','};
     this.device = device;
+    this.device_id = device_id;
     this.__count = 1;
-    this.loggedin = false;
 
     /*******************************************
     PARSE THE INCOMING STRING FROM THE DECIVE
@@ -34,6 +34,7 @@ var adapter = function (device) {
                 "action"        : 'ping',
                 "raw"           : hexdata
     		};
+            this.device_id = parts.device_id;
             return parts;
         }
 
@@ -58,6 +59,8 @@ var adapter = function (device) {
     		"data" 			: data,
     		"finish" 		: data.substr(data.length-1,1)
     	};
+
+        this.device_id = parts.device_id;
     	switch(parts.cmd){
     		case "V1":
     			parts.action = "login_request";
@@ -75,7 +78,6 @@ var adapter = function (device) {
     		default:
     			parts.action = "other";
     	}
-
     	return parts;
     };
     this.bufferToHexString = function (buffer) {
@@ -91,10 +93,6 @@ var adapter = function (device) {
     this.authorize = function () {
         //@TODO: implement this
         console.log('authorize');
-        this.loggedin = true;
-        // var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
-        // console.log(this.format_data(data));
-        // this.device.send(this.format_data(data));
     };
     this.synchronous_clock = function () {
         //@TODO: implement this
@@ -105,7 +103,7 @@ var adapter = function (device) {
 
     this.request_login_to_device = function () {
         console.log('request_login_to_device');
-        var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '2'];
+        var data = ['HQ', this.device_id, 'D1', '160720', '30', '2'];
         this.device.send(this.format_data(data));
     };
 
