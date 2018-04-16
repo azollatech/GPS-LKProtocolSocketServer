@@ -66,8 +66,8 @@ con.connect(function(err) {
 
             // console.log(datetime);
 
-            var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            con.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime], function (err, result) {
+            var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            con.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity], function (err, result) {
                 if (err) throw err;
                 console.log("1 record inserted");
             });

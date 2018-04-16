@@ -101,15 +101,12 @@ var adapter = function (device) {
     };
     this.run_other = function (cmd, msg_parts) {
         console.log('run other');
-        switch (cmd) {
-            case 'BP00': //Handshake
-            this.device.send(this.format_data(this.device.uid + 'AP01HSO'));
-            break;
-        }
+        var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '4']
+        this.device.send(this.format_data(data));
     };
 
     this.request_login_to_device = function () {
-        //@TODO: Implement this.
+        console.log('request_login_to_device');
     };
 
     this.receive_alarm = function (msg_parts) {
