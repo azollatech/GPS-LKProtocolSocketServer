@@ -10,6 +10,7 @@ var adapter = function (device) {
     this.format = {'start': '*', 'end': '#', 'separator': ','};
     this.device = device;
     this.__count = 1;
+    this.loggedin = false;
 
     /*******************************************
     PARSE THE INCOMING STRING FROM THE DECIVE
@@ -32,6 +33,12 @@ var adapter = function (device) {
     			"data" 			: hexdata.substring(12),
                 "action"        : 'ping'
     		};
+
+            if (!this.loggedin) {
+                //*XX,YYYYYYYYYY,D1,HHMMSS,interval,count#
+                var data = ['HQ', parts.device_id, 'D1', '160800', 30, 1];
+                this.device.send(this.format_data(data));
+            }
             return parts;
         }
 
@@ -84,6 +91,8 @@ var adapter = function (device) {
     };
     this.authorize = function () {
         //@TODO: implement this
+        console.log('authorize');
+        this.loggedin = true;
         // var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
         // console.log(this.format_data(data));
         // this.device.send(this.format_data(data));
@@ -223,7 +232,7 @@ var adapter = function (device) {
         } else {
             throw 'The parameters to send to the device has to be a string or an array';
         }
-        // str += this.format.end;
+        str += this.format.end;
         return str;
     };
 };
