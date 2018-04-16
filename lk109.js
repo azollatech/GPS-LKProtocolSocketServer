@@ -101,8 +101,10 @@ var adapter = function (device) {
     };
     this.run_other = function (cmd, msg_parts) {
         console.log('run other');
-        var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '4']
-        this.device.send(this.format_data(data));
+        if (!this.loggedin) {
+            var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '4'];
+            this.device.send(this.format_data(data));
+        }
     };
 
     this.request_login_to_device = function () {
