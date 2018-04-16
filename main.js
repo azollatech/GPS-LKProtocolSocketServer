@@ -41,11 +41,11 @@ var server = gps.server(options,function(device,connection){
         con.connect(function(err) {
             if (err) throw err;
 
-            var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-            con.query(sql, [data], function (err, result) {
-                if (err) throw err;
-                console.log("1 record inserted");
-            });
+            // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            // con.query(sql, [data], function (err, result) {
+            //     if (err) throw err;
+            //     console.log("1 record inserted");
+            // });
 
             var validity = data.validity;
 
@@ -66,7 +66,7 @@ var server = gps.server(options,function(device,connection){
 
             // console.log(datetime);
 
-            var sql = "INSERT INTO gps_data (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             con.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime], function (err, result) {
                 if (err) throw err;
                 console.log("1 record inserted");
