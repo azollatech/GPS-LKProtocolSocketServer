@@ -31,7 +31,8 @@ var adapter = function (device) {
     			"device_id" 	: hexdata.substr(2,10),//mandatory
     			"cmd" 			: 'ping', //mandatory
     			"data" 			: hexdata.substring(12),
-                "action"        : 'ping'
+                "action"        : 'ping',
+                "raw"           : hexdata
     		};
             return parts;
         }
@@ -163,28 +164,6 @@ var adapter = function (device) {
         var str = msg_parts.data;
         console.log('get_ping_data');
 
-        // var validity = array[4];
-        //
-        // var latitudeRaw = array[5];
-        // var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
-        // var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
-        // var latitude = latitudeDigit + latitudeDecimal;
-        // var latitude_logo = array[6];
-        // var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
-        //
-        // var longitudeRaw = array[7];
-        // var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
-        // var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
-        // var longitude = longitudeDigit + longitudeDecimal;
-        // var longitude_logo = array[8];
-        // var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
-        //
-        // var dateObj = date.parse(array[11], 'DDMMYY');
-        // var date_final = date.format(dateObj, 'YYYY-MM-DD');
-        // var timeObj = date.parse(array[3], 'HHmmss');
-        // var time_final = date.format(timeObj, 'HH:mm:ss');
-        // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
-
         var info = str.substr(30, 2);
         var binaryInfo = this.hex2bin(info);
         var bit3 = binaryInfo.substr(0, 1);
@@ -192,6 +171,7 @@ var adapter = function (device) {
         var bit1 = binaryInfo.substr(2, 1);
 
         var data = {
+            'raw': msg_parts.raw,
             'device_id': msg_parts.device_id,
             'time': str.substr(0, 6),
             'date': str.substr(6, 6),

@@ -41,11 +41,11 @@ con.connect(function(err) {
             //After the ping is received, but before the data is saved
             console.log(data);
 
-            // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-            // con.query(sql, [data], function (err, result) {
-            //     if (err) throw err;
-            //     console.log("1 record inserted");
-            // });
+            var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            con.query(sql, [data.raw], function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted");
+            });
 
             var validity = data.validity;
 
