@@ -108,13 +108,13 @@ var adapter = function (device) {
     this.lat_to_degrees = function (str) {
         var degrees = str.substr(0, 2);
         var minutes = str.substr(2, 2) + '.' + str.substr(4, 4);
-        return parseFloat(degress) + parseFloat(minutes)/60;
+        return parseFloat(degrees) + parseFloat(minutes)/60;
     };
 
     this.lng_to_degrees = function (str) {
         var degrees = str.substr(0, 3);
         var minutes = str.substr(3, 2) + '.' + str.substr(5, 3);
-        return parseFloat(degress) + parseFloat(minutes)/60;
+        return parseFloat(degrees) + parseFloat(minutes)/60;
     };
 
     this.map_battery_level = function (str) {
