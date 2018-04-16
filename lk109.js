@@ -83,6 +83,8 @@ var adapter = function (device) {
     };
     this.authorize = function () {
         //@TODO: implement this
+        var data = ['HQ', '4106000054', 'I1_2_EN', '130305', '10', '1', '9', 'test12345'];
+        this.device.send(this.format_data(data));
     };
     this.synchronous_clock = function () {
         //@TODO: implement this
@@ -196,13 +198,6 @@ var adapter = function (device) {
             'speed': str.substr(32, 3),
             'orientation': str.substr(35, 3),
         };
-
-        res = {
-            latitude: data.latitude,
-            longitude: data.longitude,
-            speed: data.speed,
-            orientation: data.orientation
-        };
         return data;
     };
 
@@ -213,8 +208,7 @@ var adapter = function (device) {
     /* INTERNAL FUNCTIONS */
 
     this.send_comand = function (cmd, data) {
-        var msg = [cmd, data];
-        this.device.send(this.format_data(msg));
+        this.device.send(this.format_data(data));
     };
     this.format_data = function (params) {
         /* FORMAT THE DATA TO BE SENT */
@@ -226,7 +220,7 @@ var adapter = function (device) {
         } else {
             throw 'The parameters to send to the device has to be a string or an array';
         }
-        str += this.format.end;
+        // str += this.format.end;
         return str;
     };
 };
