@@ -1,3 +1,5 @@
+let date = require('date-and-time');
+
 exports.protocol = 'LK109';
 exports.model_name = 'LK109';
 exports.compatible_hardware = ['LK109/supplier'];
@@ -103,7 +105,9 @@ var adapter = function (device) {
 
     this.request_login_to_device = function () {
         console.log('request_login_to_device');
-        var data = ['HQ', this.device_id, 'D1', '160720', '30', '2'];
+        let now = new Date();
+        var timeNow = date.format(now, 'HHmmss');
+        var data = ['HQ', this.device_id, 'D1', timeNow, '30', '2'];
         this.device.send(this.format_data(data));
     };
 
