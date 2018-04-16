@@ -101,14 +101,12 @@ var adapter = function (device) {
     };
     this.run_other = function (cmd, msg_parts) {
         console.log('run other');
-        if (!this.loggedin) {
-            var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '4'];
-            this.device.send(this.format_data(data));
-        }
     };
 
     this.request_login_to_device = function () {
         console.log('request_login_to_device');
+        var data = ['HQ', msg_parts.device_id, 'D1', '160720', '30', '2'];
+        this.device.send(this.format_data(data));
     };
 
     this.receive_alarm = function (msg_parts) {
