@@ -76,6 +76,10 @@ con.connect(function(err) {
 
         });
 
+        device.on('end', () => {
+            console.log('disconnected');
+        });
+
     });
 
 });
