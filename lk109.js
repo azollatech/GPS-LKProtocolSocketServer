@@ -105,42 +105,96 @@ var adapter = function (device) {
         return alarm;
     };
 
-    this.dex_to_degrees = function (dex) {
-        return parseInt(dex, 16) / 1800000;
+    this.lat_to_degrees = function (str) {
+        var degrees = str.substr(0, 2);
+        var minutes = str.substr(2, 2) + '.' + str.substr(4, 4);
+        return parseFloat(degress) + parseFloat(minutes)/60;
     };
+
+    this.lng_to_degrees = function (str) {
+        var degrees = str.substr(0, 3);
+        var minutes = str.substr(3, 2) + '.' + str.substr(5, 3);
+        return parseFloat(degress) + parseFloat(minutes)/60;
+    };
+
+    this.map_battery_level = function (str) {
+        switch (str) {
+            case '01':
+                return '10%';
+                break;
+            case '02':
+                return '20%';
+                break;
+            case '03':
+                return '40%';
+                break;
+            case '04':
+                return '60%';
+                break;
+            case '05':
+                return '80%';
+                break;
+            case '06':
+                return '100%';
+                break;
+            default:
+                return '';
+        }
+    }
+
+    this.hex2bin = function (n) {
+        if(!this.checkHex(n))
+            return 0;
+        return parseInt(n,16).toString(2)
+    }
+
+    this.checkHex = function (n) {
+        return/^[0-9A-Fa-f]{1,64}$/.test(n)
+    }
 
     this.get_ping_data = function (msg_parts) {
         var str = msg_parts.data;
         console.log('get_ping_data');
 
-            // var validity = array[4];
-            //
-            // var latitudeRaw = array[5];
-            // var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
-            // var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
-            // var latitude = latitudeDigit + latitudeDecimal;
-            // var latitude_logo = array[6];
-            // var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
-            //
-            // var longitudeRaw = array[7];
-            // var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
-            // var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
-            // var longitude = longitudeDigit + longitudeDecimal;
-            // var longitude_logo = array[8];
-            // var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
-            //
-            // var dateObj = date.parse(array[11], 'DDMMYY');
-            // var date_final = date.format(dateObj, 'YYYY-MM-DD');
-            // var timeObj = date.parse(array[3], 'HHmmss');
-            // var time_final = date.format(timeObj, 'HH:mm:ss');
-            // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+        // var validity = array[4];
+        //
+        // var latitudeRaw = array[5];
+        // var latitudeDigit = parseFloat(latitudeRaw.substring(0, 2));
+        // var latitudeDecimal = parseFloat(latitudeRaw.substring(2)) / 60;
+        // var latitude = latitudeDigit + latitudeDecimal;
+        // var latitude_logo = array[6];
+        // var latitude_final = ((latitude_logo == 'N') ? 1 : -1) * latitude;
+        //
+        // var longitudeRaw = array[7];
+        // var longitudeDigit = parseFloat(longitudeRaw.substring(0, 3));
+        // var longitudeDecimal = parseFloat(longitudeRaw.substring(3)) / 60;
+        // var longitude = longitudeDigit + longitudeDecimal;
+        // var longitude_logo = array[8];
+        // var longitude_final = ((longitude_logo == 'E') ? 1 : -1) * longitude;
+        //
+        // var dateObj = date.parse(array[11], 'DDMMYY');
+        // var date_final = date.format(dateObj, 'YYYY-MM-DD');
+        // var timeObj = date.parse(array[3], 'HHmmss');
+        // var time_final = date.format(timeObj, 'HH:mm:ss');
+        // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+
+        var info = str.substr(30, 2);
+        var binaryInfo = this.hex2bin(info);
+        var bit3 = binaryInfo.substr(0, 1);
+        var bit2 = binaryInfo.substr(1, 1);
+        var bit1 = binaryInfo.substr(2, 1);
 
         var data = {
-            'date': str.substr(0, 6),
-            'latitude': this.dex_to_degrees(str.substr(12, 8)),
-            'longitude': this.dex_to_degrees(str.substr(20, 8)),
-            'speed': parseInt(str.substr(28, 2), 16),
-            'orientation': str.substr(30, 4),
+            'time': str.substr(0, 6),
+            'date': str.substr(6, 6),
+            'latitude': this.lat_to_degrees(str.substr(12, 8)),
+            'north': bit2,
+            'longitude': this.lng_to_degrees(str.substr(22, 8)),
+            'east': bit3,
+            'validity': bit1,
+            'battery': this.map_battery_level(str.substr(20, 2)),
+            'speed': str.substr(30, 3),
+            'orientation': str.substr(33, 3),
         };
 
         res = {
