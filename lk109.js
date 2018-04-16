@@ -61,6 +61,10 @@ var adapter = function (device) {
     	switch(parts.cmd){
     		case "V1":
     			parts.action = "login_request";
+
+                var data = ['HQ', parts.device_id, 'V4', 'V1', array[11] + array[3]];
+                console.log(this.format_data(data));
+                this.device.send(this.format_data(data));
     			break;
     		case "V2":
     			parts.action = "other";
