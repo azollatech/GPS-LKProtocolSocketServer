@@ -100,6 +100,7 @@ var adapter = function (device) {
         //@TODO: implement this
     };
     this.run_other = function (cmd, msg_parts) {
+        console.log('run other');
         switch (cmd) {
             case 'BP00': //Handshake
             this.device.send(this.format_data(this.device.uid + 'AP01HSO'));
