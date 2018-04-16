@@ -103,12 +103,14 @@ var adapter = function (device) {
         console.log('run other');
     };
 
-    this.request_login_to_device = function () {
+    this.request_login_to_device = function (msgParts) {
         console.log('request_login_to_device');
-        let now = new Date();
-        var timeNow = date.format(now, 'HHmmss');
-        var data = ['HQ', this.device_id, 'D1', timeNow, '30', '2'];
-        this.device.send(this.format_data(data));
+        if (msgParts.cmd != 'V4') {
+            let now = new Date();
+            var timeNow = date.format(now, 'HHmmss');
+            var data = ['HQ', msgParts.device_id, 'D1', timeNow, '30', '2'];
+            this.device.send(this.format_data(data));
+        }
     };
 
     this.receive_alarm = function (msg_parts) {
