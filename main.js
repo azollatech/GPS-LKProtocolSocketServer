@@ -1,7 +1,7 @@
 var gps = require("gps-tracking");
 let date = require('date-and-time');
 var mysql = require('mysql');
-var moment = require('moment');
+// var moment = require('moment');
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -15,10 +15,10 @@ var options = {
     'device_adapter'        : require("./lk109.js")
 }
 
-function toTimeZone(time, zone) {
-    var format = 'YYYY-MM-DD HH:mm:ss';
-    return moment(time, format).tz(zone).format(format);
-}
+// function toTimeZone(time, zone) {
+//     var format = 'YYYY-MM-DD HH:mm:ss';
+//     return moment(time, format).tz(zone).format(format);
+// }
 
 var server = gps.server(options,function(device,connection){
 
@@ -61,7 +61,8 @@ var server = gps.server(options,function(device,connection){
             var date_final = date.format(dateObj, 'YYYY-MM-DD');
             var timeObj = date.parse(data.time, 'HHmmss');
             var time_final = date.format(timeObj, 'HH:mm:ss');
-            var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+            var datetime = date_final + ' ' + time_final;
+            // var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
 
             // console.log(datetime);
 
