@@ -193,8 +193,8 @@ var adapter = function (device) {
             'east': bit3,
             'validity': bit1,
             'battery': this.map_battery_level(str.substr(20, 2)),
-            'speed': str.substr(30, 3),
-            'orientation': str.substr(33, 3),
+            'speed': str.substr(32, 3),
+            'orientation': str.substr(35, 3),
         };
 
         res = {
@@ -203,7 +203,7 @@ var adapter = function (device) {
             speed: data.speed,
             orientation: data.orientation
         };
-        return res;
+        return data;
     };
 
     /* SET REFRESH TIME */
