@@ -77,7 +77,19 @@ con.connect(function(err) {
         });
 
         device.on('end', () => {
-            console.log('disconnected');
+            console.log('end');
+        });
+
+        device.on('close', () => {
+            console.log('close');
+        });
+
+        device.on('timeout', () => {
+            console.log('timeout');
+        });
+
+        device.on('drain', () => {
+            console.log('drain');
         });
 
     });
