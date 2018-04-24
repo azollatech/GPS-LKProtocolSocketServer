@@ -2,11 +2,18 @@ var gps = require("gps-tracking");
 let date = require('date-and-time');
 var mysql = require('mysql');
 var moment = require('moment-timezone');
-var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "rts123",
-    database: "gps"
+// var con = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "rts123",
+//     database: "gps"
+// });
+var pool  = mysql.createPool({
+  connectionLimit : 30,
+  host            : 'localhost',
+  user            : 'root',
+  password        : 'rts123',
+  database        : 'gps'
 });
 
 var options = {
@@ -20,7 +27,7 @@ function toTimeZone(time, zone) {
     return moment(time, format).tz(zone).format(format);
 }
 
-con.connect(function(err) {
+pool.getConnection(function(err, con) {
     if (err) throw err;
 
     var server = gps.server(options,function(device,connection){
@@ -71,6 +78,8 @@ con.connect(function(err) {
                 if (err) throw err;
                 console.log("1 record inserted");
             });
+
+            con.release();
 
             return data;
 
