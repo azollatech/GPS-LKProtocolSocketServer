@@ -8,6 +8,7 @@ var db_config = {
     password: "rts123",
     database: "gps"
 }
+var con;
 var options = {
     'debug'                 : true,
     'port'                  : 40000,
@@ -18,7 +19,6 @@ function toTimeZone(time, zone) {
     var format = 'YYYY-MM-DD HH:mm:ss';
     return moment(time, format).tz(zone).format(format);
 }
-var con;
 
 function handleDisconnect() {
     con = mysql.createConnection(db_config); // Recreate the connection, since
