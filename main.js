@@ -17,7 +17,7 @@ var options = {
 
 function toTimeZone(time, zone) {
     var format = 'YYYY-MM-DD HH:mm:ss';
-    return moment(time, format).tz(zone).format(format);
+    return moment.utc(time, format).tz(zone).format(format);
 }
 
 function handleDisconnect() {
@@ -60,11 +60,11 @@ var server = gps.server(options,function(device,connection){
         //After the ping is received, but before the data is saved
         console.log(data);
 
-        var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-        con.query(sql, [data.raw], function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-        });
+        // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+        // con.query(sql, [data.raw], function (err, result) {
+        //     if (err) throw err;
+        //     console.log("1 record inserted");
+        // });
 
         var validity = data.validity;
 
@@ -81,9 +81,7 @@ var server = gps.server(options,function(device,connection){
         var timeObj = date.parse(data.time, 'HHmmss');
         var time_final = date.format(timeObj, 'HH:mm:ss');
         var datetime = date_final + ' ' + time_final;
-        console.log(datetime);
         datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
-        console.log(datetime);
 
         // console.log(datetime);
 
