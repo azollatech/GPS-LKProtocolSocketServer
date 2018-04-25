@@ -24,18 +24,18 @@ function handleDisconnect() {
     con = mysql.createConnection(db_config); // Recreate the connection, since
     // the old one cannot be reused.
 
-    con.connect(function(err) {              // The server is either down
-        if(err) {                                     // or restarting (takes a while sometimes).
+    con.connect(function(err) {              // The server is either down or restarting (takes a while sometimes).
+        if(err) {
             console.log('error when connecting to db:', err);
             setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-        }                                     // to avoid a hot loop, and to allow our node script to
-    });                                     // process asynchronous requests in the meantime.
-    // If you're also serving http, display a 503 error.
+        }                                       // to avoid a hot loop, and to allow our node script to
+    });                                         // process asynchronous requests in the meantime.
+                                                // If you're also serving http, display a 503 error.
     con.on('error', function(err) {
         console.log('db error', err);
-        if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
             handleDisconnect();                         // lost due to either server restart, or a
-        } else {                                      // connnection idle timeout (the wait_timeout
+        } else {                                        // connnection idle timeout (the wait_timeout
             throw err;                                  // server variable configures this)
         }
     });
@@ -81,7 +81,9 @@ var server = gps.server(options,function(device,connection){
         var timeObj = date.parse(data.time, 'HHmmss');
         var time_final = date.format(timeObj, 'HH:mm:ss');
         var datetime = date_final + ' ' + time_final;
-        var datetime = toTimeZone(date_final + ' ' + time_final, 'Asia/Hong_Kong');
+        console.log(datetime);
+        datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
+        console.log(datetime);
 
         // console.log(datetime);
 
