@@ -95,26 +95,25 @@ var server = gps.server(options,function(device,connection){
 
     });
 
-    device.on('end', () => {
+    connection.on('end', () => {
         console.log('end');
     });
 
-    device.on('close', () => {
+    connection.on('close', () => {
         console.log('close');
     });
 
-    device.on('timeout', () => {
+    connection.on('timeout', () => {
         console.log('timeout');
     });
 
-    device.on('drain', () => {
+    connection.on('drain', () => {
         console.log('drain');
     });
 
     connection.on('error', function (data) {
         console.log("Connection Error: ");
         console.log(data);
-        // device.error(data, 'Connection error');
     });
 
 });
