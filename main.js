@@ -111,6 +111,12 @@ var server = gps.server(options,function(device,connection){
         console.log('drain');
     });
 
+    connection.on('error', function (data) {
+        console.log("Connection Error: ");
+        console.log(data);
+        // device.error(data, 'Connection error');
+    });
+
 });
 // con.connect(function(err) {
 //     if (err) throw err;
