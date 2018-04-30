@@ -103,6 +103,7 @@ var adapter = function (device) {
     };
 
     this.request_login_to_device = function (msgParts) {
+        console.log(msgParts.cmd);
         if (msgParts.cmd == 'ping' || msgParts.cmd == 'other') {
             console.log('request_login_to_device');
             let now = new Date();
