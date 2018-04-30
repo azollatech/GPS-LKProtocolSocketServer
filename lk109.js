@@ -101,8 +101,8 @@ var adapter = function (device) {
     };
 
     this.request_login_to_device = function (msgParts) {
-        console.log('request_login_to_device');
         if (msgParts.cmd == 'ping') {
+            console.log('request_login_to_device');
             let now = new Date();
             var timeNow = date.format(now, 'HHmmss');
             var data = ['HQ', msgParts.device_id, 'D1', timeNow, '30', '2'];
