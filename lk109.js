@@ -71,6 +71,8 @@ var adapter = function (device) {
                 console.log(this.format_data(data));
                 this.device.send(this.format_data(data));
     			break;
+    		case "V4":
+    			parts.action = "login_request";
     		case "NBR":
     			parts.action = "other";
     			break;
@@ -101,13 +103,13 @@ var adapter = function (device) {
     };
 
     this.request_login_to_device = function (msgParts) {
-        if (msgParts.cmd == 'ping') {
+        // if (msgParts.cmd == 'ping') {
             console.log('request_login_to_device');
             let now = new Date();
             var timeNow = date.format(now, 'HHmmss');
             var data = ['HQ', msgParts.device_id, 'D1', timeNow, '30', '2'];
             this.device.send(this.format_data(data));
-        }
+        // }
     };
 
     this.receive_alarm = function (msg_parts) {
