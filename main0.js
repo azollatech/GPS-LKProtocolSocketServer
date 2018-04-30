@@ -3,13 +3,12 @@ let date = require('date-and-time');
 var mysql = require('mysql');
 var moment = require('moment-timezone');
 var db_config = {
-    connectionLimit : 5000,
-    host            : 'localhost',
-    user            : 'root',
-    password        : 'rts123',
-    database        : 'gps'
+    host: "localhost",
+    user: "root",
+    password: "rts123",
+    database: "gps"
 }
-// var con;
+var con;
 var options = {
     'debug'                 : true,
     'port'                  : 40000,
@@ -21,30 +20,28 @@ function toTimeZone(time, zone) {
     return moment.utc(time, format).tz(zone).format(format);
 }
 
-var pool  = mysql.createPool(db_config);
+function handleDisconnect() {
+    con = mysql.createConnection(db_config); // Recreate the connection, since
+    // the old one cannot be reused.
 
-// function handleDisconnect() {
-//     con = mysql.createConnection(db_config); // Recreate the connection, since
-//     // the old one cannot be reused.
-//
-//     con.connect(function(err) {              // The server is either down or restarting (takes a while sometimes).
-//         if(err) {
-//             console.log('error when connecting to db:', err);
-//             setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-//         }                                       // to avoid a hot loop, and to allow our node script to
-//         console.log('connected.');
-//     });                                         // process asynchronous requests in the meantime.
-//                                                 // If you're also serving http, display a 503 error.
-//     con.on('error', function(err) {
-//         console.log('db error', err);
-//         if(err.code === 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
-//             handleDisconnect();                         // lost due to either server restart, or a
-//         } else {                                        // connnection idle timeout (the wait_timeout
-//             throw err;                                  // server variable configures this)
-//         }
-//     });
-// }
-// handleDisconnect();
+    con.connect(function(err) {              // The server is either down or restarting (takes a while sometimes).
+        if(err) {
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+        }                                       // to avoid a hot loop, and to allow our node script to
+        console.log('connected.');
+    });                                         // process asynchronous requests in the meantime.
+                                                // If you're also serving http, display a 503 error.
+    con.on('error', function(err) {
+        console.log('db error', err);
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
+            handleDisconnect();                         // lost due to either server restart, or a
+        } else {                                        // connnection idle timeout (the wait_timeout
+            throw err;                                  // server variable configures this)
+        }
+    });
+}
+handleDisconnect();
 
 var server = gps.server(options,function(device,connection){
 
@@ -90,7 +87,7 @@ var server = gps.server(options,function(device,connection){
         // console.log(datetime);
 
         var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+        con.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
             if (err) throw err;
             console.log("1 record inserted");
         });
