@@ -11,6 +11,7 @@ var db_config = {
 }
 // var con;
 var options = {
+    'allowHalfOpen'         : true,
     'debug'                 : true,
     'port'                  : 40000,
     'device_adapter'        : require("./lk109.js")
