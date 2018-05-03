@@ -71,8 +71,6 @@ var adapter = function (device) {
                 console.log(this.format_data(data));
                 this.device.send(this.format_data(data));
     			break;
-    		case "V4":
-    			parts.action = "login_request";
     		case "NBR":
     			parts.action = "other";
     			break;
@@ -103,7 +101,6 @@ var adapter = function (device) {
     };
 
     this.request_login_to_device = function (msgParts) {
-        console.log(msgParts.cmd);
         if (msgParts.cmd == 'ping' || msgParts.cmd == 'other') {
             console.log('request_login_to_device');
             let now = new Date();

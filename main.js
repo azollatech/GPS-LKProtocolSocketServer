@@ -9,7 +9,6 @@ var db_config = {
     password        : 'rts123',
     database        : 'gps'
 }
-// var con;
 var options = {
     'allowHalfOpen'         : true,
     'debug'                 : true,
