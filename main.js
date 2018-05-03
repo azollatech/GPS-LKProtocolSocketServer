@@ -16,6 +16,17 @@ var options = {
     'device_adapter'        : require("./lk109.js")
 }
 
+// Log to a file and console screen
+var fs = require('fs');
+var util = require('util');
+var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'a'});
+var log_stdout = process.stdout;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
+
 function toTimeZone(time, zone) {
     var format = 'YYYY-MM-DD HH:mm:ss';
     return moment.utc(time, format).tz(zone).format(format);
