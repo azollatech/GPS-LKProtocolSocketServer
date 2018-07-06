@@ -7,7 +7,7 @@ var db_config = {
     host            : 'localhost',
     user            : 'root',
     password        : 'rts123',
-    database        : 'gps'
+    database        : 'gps_live'
 }
 var options = {
     'allowHalfOpen'         : true,
@@ -99,12 +99,39 @@ var server = gps.server(options,function(device,connection){
         datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
 
         // console.log(datetime);
-
-        var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+        pool.query("SELECT event_id FROM `events` WHERE current = 1", function (err, result, fields) {
             if (err) throw err;
-            console.log("1 record inserted");
+            
+            if (result.length > 0) {
+                console.log('=== Live event data ===');
+                pool.query(`USE gps_live`, (error, results, fields) => {
+                    if (err) throw err;
+
+                    var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+                        if (err) throw err;
+                        console.log("1 record inserted");
+                    });
+                });
+            } else {
+                console.log('=== Archive data ===');
+                pool.query(`USE gps`, (error, results, fields) => {
+                    if (err) throw err;
+
+                    var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+                        if (err) throw err;
+                        console.log("1 record inserted");
+                    });
+                });
+            }
         });
+
+        // var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+        //     if (err) throw err;
+        //     console.log("1 record inserted");
+        // });
 
         return data;
 
