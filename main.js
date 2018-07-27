@@ -57,102 +57,107 @@ var pool  = mysql.createPool(db_config);
 // }
 // handleDisconnect();
 
-var server = gps.server(options,function(device,connection){
+for (var i = 40000; i <= 40005; i++) {
+    options['port'] = i;
 
-    device.on("login_request",function(device_id,msg_parts){
+    var server = gps.server(options,function(device,connection){
 
-        // Some devices sends a login request before transmitting their position
-        // Do some stuff before authenticate the device...
+        device.on("login_request",function(device_id,msg_parts){
 
-        // Accept the login request. You can set false to reject the device.
-        this.login_authorized(true);
+            // Some devices sends a login request before transmitting their position
+            // Do some stuff before authenticate the device...
 
-    });
+            // Accept the login request. You can set false to reject the device.
+            this.login_authorized(true);
 
-    //PING -> When the gps sends their position
-    device.on("ping",function(data){
-
-        //After the ping is received, but before the data is saved
-        console.log(data);
-
-        // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
-        // con.query(sql, [data.raw], function (err, result) {
-        //     if (err) throw err;
-        //     console.log("1 record inserted");
-        // });
-
-        var validity = data.validity;
-
-        var latitude = data.latitude;
-        var latitude_logo = (data.north == '1') ? 'N' : 'S';
-        var latitude_final = ((data.north == '1') ? 1 : -1) * latitude;
-
-        var longitude = data.longitude;
-        var longitude_logo = (data.east == '1') ? 'E' : 'W';
-        var longitude_final = ((data.east == '1') ? 1 : -1) * longitude;
-
-        var dateObj = date.parse(data.date, 'DDMMYY');
-        var date_final = date.format(dateObj, 'YYYY-MM-DD');
-        var timeObj = date.parse(data.time, 'HHmmss');
-        var time_final = date.format(timeObj, 'HH:mm:ss');
-        var datetime = date_final + ' ' + time_final;
-        datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
-
-        // console.log(datetime);
-        pool.query("SELECT event_id FROM `events` WHERE current = 1", function (err, result, fields) {
-            if (err) throw err;
-
-            if (result.length > 0) {
-                console.log('=== Live event data ===');
-
-                var sql = "INSERT INTO `gps_live`.`gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
-                    if (err) throw err;
-                    console.log("1 record inserted");
-                });
-            } else {
-                console.log('=== Archive data ===');
-
-                var sql = "INSERT INTO `gps`.`gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
-                    if (err) throw err;
-                    console.log("1 record inserted");
-                });
-            }
         });
 
-        // var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        // pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
-        //     if (err) throw err;
-        //     console.log("1 record inserted");
-        // });
+        //PING -> When the gps sends their position
+        device.on("ping",function(data){
 
-        return data;
+            //After the ping is received, but before the data is saved
+            console.log(data);
+
+            // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            // con.query(sql, [data.raw], function (err, result) {
+            //     if (err) throw err;
+            //     console.log("1 record inserted");
+            // });
+
+            var validity = data.validity;
+
+            var latitude = data.latitude;
+            var latitude_logo = (data.north == '1') ? 'N' : 'S';
+            var latitude_final = ((data.north == '1') ? 1 : -1) * latitude;
+
+            var longitude = data.longitude;
+            var longitude_logo = (data.east == '1') ? 'E' : 'W';
+            var longitude_final = ((data.east == '1') ? 1 : -1) * longitude;
+
+            var dateObj = date.parse(data.date, 'DDMMYY');
+            var date_final = date.format(dateObj, 'YYYY-MM-DD');
+            var timeObj = date.parse(data.time, 'HHmmss');
+            var time_final = date.format(timeObj, 'HH:mm:ss');
+            var datetime = date_final + ' ' + time_final;
+            datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
+
+            // console.log(datetime);
+            pool.query("SELECT event_id FROM `events` WHERE port = 1", function (err, result, fields) {
+                if (err) throw err;
+
+                if (result.length > 0) {
+                    console.log('=== Live event data ===');
+
+                    var sql = "INSERT INTO `gps_live`.`gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+                        if (err) throw err;
+                        console.log("1 record inserted");
+                    });
+                } else {
+                    console.log('=== Archive data ===');
+
+                    var sql = "INSERT INTO `gps`.`gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+                        if (err) throw err;
+                        console.log("1 record inserted");
+                    });
+                }
+            });
+
+            // var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+            //     if (err) throw err;
+            //     console.log("1 record inserted");
+            // });
+
+            return data;
+
+        });
+
+        connection.on('end', () => {
+            console.log('end');
+        });
+
+        connection.on('close', () => {
+            console.log('close');
+        });
+
+        connection.on('timeout', () => {
+            console.log('timeout');
+        });
+
+        connection.on('drain', () => {
+            console.log('drain');
+        });
+
+        connection.on('error', function (data) {
+            console.log("Connection Error: ");
+            console.log(data);
+        });
 
     });
+}
 
-    connection.on('end', () => {
-        console.log('end');
-    });
-
-    connection.on('close', () => {
-        console.log('close');
-    });
-
-    connection.on('timeout', () => {
-        console.log('timeout');
-    });
-
-    connection.on('drain', () => {
-        console.log('drain');
-    });
-
-    connection.on('error', function (data) {
-        console.log("Connection Error: ");
-        console.log(data);
-    });
-
-});
 // con.connect(function(err) {
 //     if (err) throw err;
 //
