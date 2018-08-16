@@ -102,7 +102,7 @@ for (var i = 40000; i <= 40005; i++) {
             console.log(datetime);
 
             // read ports/events mapping text file
-            fs.readFile('C:\Bitnami\wampstack-5.5.31-0\apache2\htdocs\gps\gps\storage\ports_events_mapping.txt', 'utf8', function(err, mappingJson) {
+            fs.readFile('C:/Bitnami/wampstack-5.5.31-0/apache2/htdocs/gps/gps/storage/ports_events_mapping.txt', 'utf8', function(err, mappingJson) {
                 var mappingArray = [];
                 var isLive = false;
 
