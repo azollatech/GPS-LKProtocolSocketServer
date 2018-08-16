@@ -116,8 +116,8 @@ for (var i = 40000; i <= 40005; i++) {
                 if (isLive && port in mappingArray) {
                     console.log('=== Live event data (port:'+port+', event_id:'+mappingArray[port]+') ===');
 
-                    var sql = "INSERT INTO `gps_live_" + mappingArray[port] + "`.`raw_data` (device_id, latitude, longitude, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?)";
-                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.validity, data.battery], function (err, mappingJson) {
+                    var sql = "INSERT INTO `gps_live_" + mappingArray[port] + "`.`raw_data` (device_id, latitude, longitude, datetime, battery_level) VALUES (?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.battery], function (err, mappingJson) {
                         if (err){
                             console.log(err);
                         } else{
@@ -127,8 +127,8 @@ for (var i = 40000; i <= 40005; i++) {
                 } else {
                     console.log('=== Archive data (port:'+port+') ===');
 
-                    var sql = "INSERT INTO `gps`.`raw_data` (device_id, latitude, longitude, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?)";
-                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+                    var sql = "INSERT INTO `gps`.`raw_data` (device_id, latitude, longitude, datetime, battery_level, event_id) VALUES (?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.battery, mappingArray[port]], function (err, result) {
                         if (err){
                             console.log(err);
                         } else{
