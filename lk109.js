@@ -45,17 +45,17 @@ var adapter = function (device) {
         console.log(data);
 
         // GL300M
-        if (data.substr(0,11) == '+RESP:GTGEO' ||
-            data.substr(0,11) == '+RESP:GTSPD' ||
-            data.substr(0,11) == '+RESP:GTSOS' ||
-            data.substr(0,11) == '+RESP:GTRTL' ||
-            data.substr(0,11) == '+RESP:GTPNL' ||
-            data.substr(0,11) == '+RESP:GTNMR' ||
-            data.substr(0,11) == '+RESP:GTDIS' ||
-            data.substr(0,11) == '+RESP:GTDOG' ||
-            data.substr(0,11) == '+RESP:GTIGL' ||
-            data.substr(0,11) == '+RESP:GTFRI' ||
-            data.substr(0,11) == '+RESP:GTERI') {
+        if ( (data.substr(0,5) == '+RESP' || data.substr(0,5) == '+BUFF') &&
+            (data.substr(6,6) == 'GTSPD' ||
+            data.substr(6,6) == 'GTSOS' ||
+            data.substr(6,6) == 'GTRTL' ||
+            data.substr(6,6) == 'GTPNL' ||
+            data.substr(6,6) == 'GTNMR' ||
+            data.substr(6,6) == 'GTDIS' ||
+            data.substr(6,6) == 'GTDOG' ||
+            data.substr(6,6) == 'GTIGL' ||
+            data.substr(6,6) == 'GTFRI' ||
+            data.substr(6,6) == 'GTERI') ) {
             var array = data.split(',');
         	var parts={
         		"start" 		: data.substr(0,1),
