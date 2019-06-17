@@ -46,16 +46,16 @@ var adapter = function (device) {
 
         // GL300M
         if ( (data.substr(0,5) == '+RESP' || data.substr(0,5) == '+BUFF') &&
-            (data.substr(6,6) == 'GTSPD' ||
-            data.substr(6,6) == 'GTSOS' ||
-            data.substr(6,6) == 'GTRTL' ||
-            data.substr(6,6) == 'GTPNL' ||
-            data.substr(6,6) == 'GTNMR' ||
-            data.substr(6,6) == 'GTDIS' ||
-            data.substr(6,6) == 'GTDOG' ||
-            data.substr(6,6) == 'GTIGL' ||
-            data.substr(6,6) == 'GTFRI' ||
-            data.substr(6,6) == 'GTERI') ) {
+            (data.substr(6,5) == 'GTSPD' ||
+            data.substr(6,5) == 'GTSOS' ||
+            data.substr(6,5) == 'GTRTL' ||
+            data.substr(6,5) == 'GTPNL' ||
+            data.substr(6,5) == 'GTNMR' ||
+            data.substr(6,5) == 'GTDIS' ||
+            data.substr(6,5) == 'GTDOG' ||
+            data.substr(6,5) == 'GTIGL' ||
+            data.substr(6,5) == 'GTFRI' ||
+            data.substr(6,5) == 'GTERI') ) {
             var array = data.split(',');
         	var parts={
         		"start" 		: data.substr(0,1),
