@@ -44,7 +44,29 @@ var adapter = function (device) {
         data = data.toString();
         console.log(data);
 
-        if (data.substr(0,1) != '*' || data.indexOf(',') < 0) {
+        // GL300M
+        if (data.substr(0,11) == '+RESP:GTGEO' ||
+            data.substr(0,11) == '+RESP:GTSPD' ||
+            data.substr(0,11) == '+RESP:GTSOS' ||
+            data.substr(0,11) == '+RESP:GTRTL' ||
+            data.substr(0,11) == '+RESP:GTPNL' ||
+            data.substr(0,11) == '+RESP:GTNMR' ||
+            data.substr(0,11) == '+RESP:GTDIS' ||
+            data.substr(0,11) == '+RESP:GTDOG' ||
+            data.substr(0,11) == '+RESP:GTIGL' ||
+            data.substr(0,11) == '+RESP:GTFRI' ||
+            data.substr(0,11) == '+RESP:GTERI') {
+            var array = data.split(',');
+        	var parts={
+        		"start" 		: data.substr(0,1),
+        		"device_id" 	: array[2],//mandatory
+        		"cmd" 			: array[0], //mandatory
+        		"data" 			: data,
+                "action"        : 'ping_GL300M',
+        		"finish" 		: data.substr(data.length-1,1)
+        	};
+            return parts;
+        } else if (data.substr(0,1) != '*' || data.indexOf(',') < 0) {
             var parts={
         		"device_id" 	: 'unrecognized',
         		"cmd" 			: 'unrecognized',
@@ -174,7 +196,7 @@ var adapter = function (device) {
         var bit1 = binaryInfo.substr(2, 1);
 
         var data = {
-            'raw': msg_parts.raw,
+            'raw': str,
             'device_id': msg_parts.device_id,
             'time': str.substr(0, 6),
             'date': str.substr(6, 6),
@@ -186,6 +208,26 @@ var adapter = function (device) {
             'battery': this.map_battery_level(str.substr(20, 2)),
             'speed': str.substr(32, 3),
             'orientation': str.substr(35, 3),
+        };
+        return data;
+    };
+
+    this.get_ping_data_GL300M = function (msg_parts) {
+        var str = msg_parts.data;
+        console.log('get_ping_data_GL300M');
+        var array = str.split(',');
+
+        var data = {
+            'raw': str,
+            'device_id': array[1],
+            'time': array[13].substr(8, 6),
+            'date': array[13].substr(0, 8),
+            'latitude': array[12],
+            'longitude': array[11],
+            'validity': array[7],
+            'battery': array[19],
+            'speed': array[8],
+            'orientation': array[9],
         };
         return data;
     };

@@ -148,6 +148,79 @@ for (var i = 40000; i <= 40005; i++) {
 
         });
 
+        //PING -> When the gps sends their position
+        device.on("ping_GL300M",function(data){
+
+            //After the ping is received, but before the data is saved
+
+            // var sql = "INSERT INTO gps_raw (raw) VALUES (?)";
+            // con.query(sql, [data.raw], function (err, result) {
+            //     if (err) throw err;
+            //     console.log("1 record inserted");
+            // });
+
+            var validity = data.validity;
+
+            var latitude_final = data.latitude;
+
+            var longitude_final = data.longitude;
+
+            var dateObj = date.parse(data.date, 'YYYYMMDD');
+            var date_final = date.format(dateObj, 'YYYY-MM-DD');
+            var timeObj = date.parse(data.time, 'HHmmss');
+            var time_final = date.format(timeObj, 'HH:mm:ss');
+            var datetime = date_final + ' ' + time_final;
+            datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
+
+            console.log(datetime);
+
+            // read ports/events mapping text file
+            fs.readFile('C:/Bitnami/wampstack-5.5.31-0/apache2/htdocs/gps/gps/storage/ports_events_mapping.txt', 'utf8', function(err, mappingJson) {
+                var mappingArray = [];
+                var isLive = false;
+
+                if (err){
+                    console.log(err);
+                } else{
+                    mappingArray = JSON.parse(mappingJson);
+                    isLive = true;
+                }
+
+                if (isLive && port in mappingArray) {
+                    console.log('=== Live event data (port:'+port+', event_id:'+mappingArray[port]+') ===');
+
+                    var sql = "INSERT INTO `gps_live_" + mappingArray[port] + "`.`raw_data` (device_id, latitude, longitude, datetime, battery_level) VALUES (?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.battery], function (err, mappingJson) {
+                        if (err){
+                            console.log(err);
+                        } else{
+                            console.log("1 record inserted");
+                        }
+                    });
+                } else {
+                    console.log('=== Archive data (port:'+port+') ===');
+
+                    var sql = "INSERT INTO `gps`.`raw_data` (device_id, latitude, longitude, datetime, battery_level, event_id) VALUES (?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [data.device_id, latitude_final, longitude_final, datetime, data.battery, mappingArray[port]], function (err, result) {
+                        if (err){
+                            console.log(err);
+                        } else{
+                            console.log("1 record inserted");
+                        }
+                    });
+                }
+            });
+
+            // var sql = "INSERT INTO `gps_data` (device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, is_valid, battery_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // pool.query(sql, [data.device_id, latitude, latitude_logo, latitude_final, longitude, longitude_logo, longitude_final, datetime, data.validity, data.battery], function (err, result) {
+            //     if (err) throw err;
+            //     console.log("1 record inserted");
+            // });
+
+            return data;
+
+        });
+
         connection.on('end', () => {
             console.log('end');
         });
