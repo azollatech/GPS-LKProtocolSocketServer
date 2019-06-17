@@ -225,7 +225,7 @@ var adapter = function (device) {
             'latitude': array[12],
             'longitude': array[11],
             'validity': array[7],
-            'battery': array[19],
+            'battery': array[19] + "%",
             'speed': array[8],
             'orientation': array[9],
         };
