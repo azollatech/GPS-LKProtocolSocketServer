@@ -165,6 +165,9 @@ for (var i = 40000; i <= 40005; i++) {
 
             var longitude_final = data.longitude;
 
+            if (data.date.length != 8 || data.date.length != 6 || latitude_final == "0.000000" || longitude_final == "0.000000") {
+                return data;
+            }
             var dateObj = date.parse(data.date, 'YYYYMMDD');
             var date_final = date.format(dateObj, 'YYYY-MM-DD');
             var timeObj = date.parse(data.time, 'HHmmss');
