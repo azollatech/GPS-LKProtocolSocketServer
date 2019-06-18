@@ -221,23 +221,23 @@ for (var i = 40000; i <= 40005; i++) {
 
         });
 
-        connection.on('end', () => {
+        device.on('end', () => {
             console.log('end');
         });
 
-        connection.on('close', () => {
+        device.on('close', () => {
             console.log('close');
         });
 
-        connection.on('timeout', () => {
+        device.on('timeout', () => {
             console.log('timeout');
         });
 
-        connection.on('drain', () => {
+        device.on('drain', () => {
             console.log('drain');
         });
 
-        connection.on('error', function (data) {
+        device.on('error', function (data) {
             console.log("Connection Error: ");
             console.log(data);
         });
