@@ -219,8 +219,8 @@ var adapter = function (device) {
         var data = {
             'raw': str,
             'device_id': array[2],
-            'time': array[20].substr(8, 6),
-            'date': array[20].substr(0, 8),
+            'time': array[13].substr(8, 6),
+            'date': array[13].substr(0, 8),
             'latitude': array[12],
             'longitude': array[11],
             'validity': array[7],
