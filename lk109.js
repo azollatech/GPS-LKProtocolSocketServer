@@ -221,6 +221,8 @@ var adapter = function (device) {
             'device_id': array[2],
             'time': array[13].substr(8, 6),
             'date': array[13].substr(0, 8),
+            'send_time': array[20].substr(8, 6),
+            'send_date': array[20].substr(0, 8),
             'latitude': array[12],
             'longitude': array[11],
             'validity': array[7],
