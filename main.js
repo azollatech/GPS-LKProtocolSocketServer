@@ -175,12 +175,15 @@ for (var i = 40000; i <= 40005; i++) {
             var datetime = date_final + ' ' + time_final;
             datetime = toTimeZone(datetime, 'Asia/Hong_Kong');
 
-            var dateObj = date.parse(data.send_date, 'YYYYMMDD');
-            var date_final = date.format(dateObj, 'YYYY-MM-DD');
-            var timeObj = date.parse(data.send_time, 'HHmmss');
-            var time_final = date.format(timeObj, 'HH:mm:ss');
-            var send_datetime = date_final + ' ' + time_final;
-            send_datetime = toTimeZone(send_datetime, 'Asia/Hong_Kong');
+            var send_datetime = "";
+            if (data.send_date.length == 8 && data.send_time.length == 6) {
+                var dateObj = date.parse(data.send_date, 'YYYYMMDD');
+                var date_final = date.format(dateObj, 'YYYY-MM-DD');
+                var timeObj = date.parse(data.send_time, 'HHmmss');
+                var time_final = date.format(timeObj, 'HH:mm:ss');
+                send_datetime = date_final + ' ' + time_final;
+                send_datetime = toTimeZone(send_datetime, 'Asia/Hong_Kong');
+            }
 
             console.log(datetime);
 
